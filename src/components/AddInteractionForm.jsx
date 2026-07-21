@@ -1,16 +1,10 @@
 // src/components/AddInteractionForm.jsx
-import { useState } from "react";
+import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { API_BASE } from "../App";
 
 import styles from "./AddInteractionForm.module.css";
-
-const EMPTY_FORM = {
-  type: "call",
-  notes: "",
-  date: new Date().toISOString().split("T")[0],
-};
 
 const interactionSchema = yup.object().shape({
   type: yup.string().required("Interaction type is required"),
@@ -26,59 +20,34 @@ const interactionSchema = yup.object().shape({
 });
 
 function AddInteractionForm({ customerId, onSuccess }) {
-  const [formData, setFormData] = useState(EMPTY_FORM);
-  const [submitting, setSubmitting] = useState(false);
-  const [errors, setErrors] = useState({});
-
-  const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const handleBlur = async (e) => {
-    const { name, value } = e.target;
-    try {
-      await interactionSchema.validateAt(name, { ...formData, [name]: value });
-      setErrors((prev) => ({ ...prev, [name]: "" }));
-    } catch (err) {
-      setErrors((prev) => ({ ...prev, [name]: err.message }));
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      await interactionSchema.validate(formData, { abortEarly: false });
-    } catch (err) {
-      const fieldErrors = {};
-      err.inner.forEach((validationError) => {
-        fieldErrors[validationError.path] = validationError.message;
-      });
-      setErrors(fieldErrors);
-      return;
-    }
-
-    setSubmitting(true);
-    try {
-      const res = await fetch(`${API_BASE}/interactions`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, customerId }),
-      });
-      if (!res.ok) throw new Error("Failed to save interaction");
-      const savedInteraction = await res.json();
-      setErrors({});
-      setFormData(EMPTY_FORM);
-      onSuccess(savedInteraction);
-    } catch (err) {
-      alert(err.message);
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const formik = useFormik({
+    initialValues: {
+      type: "call",
+      notes: "",
+      date: new Date().toISOString().split("T")[0],
+    },
+    validationSchema: interactionSchema,
+    onSubmit: async (values, { setSubmitting, resetForm }) => {
+      try {
+        const res = await fetch(`${API_BASE}/interactions`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...values, customerId }),
+        });
+        if (!res.ok) throw new Error("Failed to save interaction");
+        const savedInteraction = await res.json();
+        resetForm();
+        onSuccess(savedInteraction);
+      } catch (err) {
+        alert(err.message);
+      } finally {
+        setSubmitting(false);
+      }
+    },
+  });
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form}>
+    <form onSubmit={formik.handleSubmit} className={styles.form}>
       <h3 className={styles.heading}>Log Interaction</h3>
 
       <div className={styles.field}>
@@ -86,9 +55,9 @@ function AddInteractionForm({ customerId, onSuccess }) {
         <select
           id="type"
           name="type"
-          value={formData.type}
-          onChange={handleChange}
-          disabled={submitting}
+          value={formik.values.type}
+          disabled={formik.isSubmitting}
+          {...formik.getFieldProps("type")}
         >
           <option value="call">Phone Call</option>
           <option value="email">Email</option>
@@ -102,13 +71,13 @@ function AddInteractionForm({ customerId, onSuccess }) {
           id="notes"
           name="notes"
           rows={3}
-          value={formData.notes}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          disabled={submitting}
+          disabled={formik.isSubmitting}
           placeholder="What was discussed?"
+          {...formik.getFieldProps("notes")}
         />
-        {errors.notes && <p className={styles.fieldError}>{errors.notes}</p>}
+        {formik.touched.notes && formik.errors.notes && (
+          <p className={styles.fieldError}>{formik.errors.notes}</p>
+        )}
       </div>
 
       <div className={styles.field}>
@@ -117,20 +86,20 @@ function AddInteractionForm({ customerId, onSuccess }) {
           id="date"
           name="date"
           type="date"
-          value={formData.date}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          disabled={submitting}
+          disabled={formik.isSubmitting}
+          {...formik.getFieldProps("date")}
         />
-        {errors.date && <p className={styles.fieldError}>{errors.date}</p>}
+        {formik.touched.date && formik.errors.date && (
+          <p className={styles.fieldError}>{formik.errors.date}</p>
+        )}
       </div>
 
       <button
         type="submit"
         className={styles.submitButton}
-        disabled={submitting}
+        disabled={formik.isSubmitting}
       >
-        {submitting ? "Saving..." : "Log Interaction"}
+        {formik.isSubmitting ? "Saving..." : "Log Interaction"}
       </button>
     </form>
   );
