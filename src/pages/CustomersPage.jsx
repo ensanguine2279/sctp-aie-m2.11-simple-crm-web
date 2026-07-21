@@ -45,7 +45,7 @@ function CustomersPage() {
       <SearchBar searchTerm={searchTerm} onSearch={setSearchTerm} />
 
       <div className="customer-list">
-        <h2>Customers ({filteredCustomers.length})</h2>
+        <h2>Customer Directory ({filteredCustomers.length})</h2>
         {filteredCustomers.length === 0 ? (
           <p className="empty-state">
             {searchTerm
