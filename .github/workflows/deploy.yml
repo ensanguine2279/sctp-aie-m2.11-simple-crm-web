@@ -4,9 +4,15 @@ on:
   push:
     branches: [main] # Change to 'master' if your default branch is master
 
+# Add these permissions to allow the action to commit and push changes
+permissions:
+  contents: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # Forces smooth execution on Node 24
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
