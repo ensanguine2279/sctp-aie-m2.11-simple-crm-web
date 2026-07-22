@@ -10,6 +10,19 @@ import "./index.css";
 
 const queryClient = new QueryClient();
 
+// Check if redirected from the 404.html hack
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const redirectedPath = urlParams.get("p");
+
+if (redirectedPath) {
+  window.history.replaceState(
+    null,
+    null,
+    window.location.pathname + redirectedPath + window.location.hash,
+  );
+}
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
