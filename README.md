@@ -95,7 +95,7 @@ jobs:
 
 ---
 
-## Step 4: Push Changes and Verify
+### Step 4: Push Changes and Verify
 
 Commit your code changes and push them to your target branch (e.g. `challenge5`):
 
@@ -105,4 +105,4 @@ git commit -m "Configure GitHub Actions deployment for GitHub Pages"
 git push origin challenge5
 ```
 
-Head over to the **Actions** tab in your GitHub repository to check that both the `build` and `deploy` jobs complete successfully. Once finished, the application will be live at the GitHub Pages URL.
+Head over to the **Actions** tab in your GitHub repository to check that both the `build` and `deploy` jobs complete successfully. Once finished, the application will be live at the GitHub Pages URL `https://[GITHUB USERNAME].github.io/[REPOSITORY NAME]`.
