@@ -8,6 +8,7 @@ import {
 
 import { AuthContext } from "./AuthContext";
 import { customerReducer, initialState } from "../reducers/customerReducer";
+
 import { API_BASE } from "../App";
 
 export const CustomerContext = createContext();

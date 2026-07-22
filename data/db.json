@@ -74,20 +74,6 @@
   "interactions": [
     {
       "type": "call",
-      "notes": "talk",
-      "date": "2026-07-20",
-      "customerId": "c1",
-      "id": "PfWII1Q9nbc"
-    },
-    {
-      "type": "call",
-      "notes": "",
-      "date": "2026-07-20",
-      "customerId": "c1",
-      "id": "NOBIp62rIwE"
-    },
-    {
-      "type": "call",
       "notes": "test",
       "date": "2026-07-21",
       "customerId": "c2",
@@ -99,6 +85,13 @@
       "date": "2026-07-23",
       "customerId": "c2",
       "id": "8gqYX0kKdxU"
+    },
+    {
+      "type": "call",
+      "notes": "Talk about new product features and pricing",
+      "date": "2026-07-22T02:22:08.215Z",
+      "customerId": "c1",
+      "id": "ggNJsp1q91U"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
