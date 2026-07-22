@@ -32,6 +32,9 @@ function NewCustomerPage() {
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+
+    // Clear the error for this field as soon as the user types
+    setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
   };
 
   const handleBlur = async (e) => {
