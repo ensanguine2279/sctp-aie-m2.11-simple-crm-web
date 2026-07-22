@@ -92,6 +92,20 @@
       "date": "2026-07-22T02:22:08.215Z",
       "customerId": "c1",
       "id": "ggNJsp1q91U"
+    },
+    {
+      "type": "email",
+      "notes": "Sent the proposals for different options",
+      "date": "2026-07-22T03:03:42.894Z",
+      "customerId": "c1",
+      "id": "0701RgQ18Pw"
+    },
+    {
+      "type": "meeting",
+      "notes": "Met up for lunch and close to confirming a deal",
+      "date": "2026-07-22T03:04:25.798Z",
+      "customerId": "c1",
+      "id": "EtaK1lJ1XiU"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
