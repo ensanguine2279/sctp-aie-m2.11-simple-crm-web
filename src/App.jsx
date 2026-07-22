@@ -24,7 +24,7 @@ export const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/sctp-aie-m2.11-simple-crm-web">
       {/* Routes Definition */}
       <Routes>
         {/* user accesses "/" - root path */}

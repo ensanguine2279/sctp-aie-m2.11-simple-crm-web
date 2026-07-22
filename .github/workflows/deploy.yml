@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main] # Change to 'master' if your default branch is master
+    branches: [challenge5] # Change to 'master' if your default branch is master
 
 # Add these permissions to allow the action to commit and push changes
 permissions:
