@@ -4,6 +4,9 @@ import * as yup from "yup";
 
 import styles from "./AddInteractionForm.module.css";
 
+const oneYearAgo = new Date();
+oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+
 const interactionSchema = yup.object().shape({
   type: yup.string().required("Interaction type is required"),
   notes: yup
@@ -14,7 +17,8 @@ const interactionSchema = yup.object().shape({
     .date()
     .typeError("Date is required.")
     .required("Date is required.")
-    .max(new Date(), "Date cannot be in the future."),
+    .max(new Date(), "Date cannot be in the future.")
+    .min(oneYearAgo, "Date cannot be more than a year ago."),
 });
 
 function AddInteractionForm() {

@@ -11,9 +11,11 @@ import EditCustomerPage from "./pages/EditCustomerPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import LoginPage from "./pages/LoginPage";
 import ProtectedRoute from "./components/ProtectedRoute";
-import "./App.css";
+
 import Spinner from "./components/Spinner";
 // import ProductsPage from "./pages/ProductsPage";
+
+import "./App.css";
 
 // Lazy loading
 const ProductsPage = lazy(() => import("./pages/ProductsPage"));
