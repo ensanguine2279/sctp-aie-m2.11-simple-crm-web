@@ -1,8 +1,6 @@
-// src/components/AddInteractionForm.jsx
+import { useInteractions } from "../contexts/InteractionsContext";
 import { useFormik } from "formik";
 import * as yup from "yup";
-
-import { API_BASE } from "../App";
 
 import styles from "./AddInteractionForm.module.css";
 
@@ -19,7 +17,9 @@ const interactionSchema = yup.object().shape({
     .max(new Date(), "Date cannot be in the future."),
 });
 
-function AddInteractionForm({ customerId, onSuccess }) {
+function AddInteractionForm() {
+  const { addInteraction } = useInteractions();
+
   const formik = useFormik({
     initialValues: {
       type: "call",
@@ -27,22 +27,13 @@ function AddInteractionForm({ customerId, onSuccess }) {
       date: new Date().toISOString().split("T")[0],
     },
     validationSchema: interactionSchema,
-    onSubmit: async (values, { setSubmitting, resetForm }) => {
-      try {
-        const res = await fetch(`${API_BASE}/interactions`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...values, customerId }),
-        });
-        if (!res.ok) throw new Error("Failed to save interaction");
-        const savedInteraction = await res.json();
-        resetForm();
-        onSuccess(savedInteraction);
-      } catch (err) {
-        alert(err.message);
-      } finally {
-        setSubmitting(false);
-      }
+    onSubmit: async (values, { resetForm }) => {
+      //Call addInteraction from context instead of manual fetch
+      addInteraction(values, {
+        onSuccess: () => {
+          resetForm();
+        },
+      });
     },
   });
 
@@ -97,7 +88,7 @@ function AddInteractionForm({ customerId, onSuccess }) {
       <button
         type="submit"
         className={styles.submitButton}
-        disabled={formik.isSubmitting}
+        disabled={formik.isSubmitting || formik.isAdding}
       >
         {formik.isSubmitting ? "Saving..." : "Log Interaction"}
       </button>

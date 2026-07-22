@@ -1,20 +1,24 @@
 import { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate, Link } from "react-router";
-import { API_BASE } from "../App";
+
+import { InteractionsProvider } from "../contexts/InteractionsContext";
+
+import { CustomerContext } from "../contexts/CustomerContext";
+
+import AddInteractionForm from "../components/AddInteractionForm";
+import InteractionList from "../components/InteractionList";
+
 import Spinner from "../components/Spinner";
 import styles from "./CustomerDetailPage.module.css";
-import { CustomerContext } from "../contexts/CustomerContext";
-import AddInteractionForm from "../components/AddInteractionForm";
+
+import { API_BASE } from "../App";
 
 function CustomerDetailPage() {
-  // app/customers/:id
-  // app/customers/c1
   const { id } = useParams();
   const navigate = useNavigate();
-  const { deleteCustomer } = useContext(CustomerContext);
 
+  const { deleteCustomer } = useContext(CustomerContext);
   const [customer, setCustomer] = useState(null);
-  const [interactions, setInteractions] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -31,11 +35,12 @@ function CustomerDetailPage() {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`${API_BASE}/customers/${id}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        // Fetch customer info
+        const resCustomers = await fetch(`${API_BASE}/customers/${id}`);
+        if (!resCustomers.ok) {
+          throw new Error(`HTTP error! status: ${resCustomers.status}`);
         }
-        const data = await response.json();
+        const data = await resCustomers.json();
         setCustomer(data);
       } catch (err) {
         setError(err.message);
@@ -45,19 +50,6 @@ function CustomerDetailPage() {
     };
     fetchCustomer();
   }, [id]); // re-fetch whenever the id in the URL changes
-
-  useEffect(() => {
-    const fetchInteractions = async () => {
-      const response = await fetch(`${API_BASE}/interactions?customerId=${id}`);
-      if (!response.ok) {
-        setInteractions([]);
-        return;
-      }
-      const data = await response.json();
-      setInteractions(data);
-    };
-    fetchInteractions();
-  }, [id]);
 
   if (loading) {
     return (
@@ -131,27 +123,10 @@ function CustomerDetailPage() {
         Delete Customer
       </button>
 
-      <AddInteractionForm
-        customerId={id}
-        onSuccess={(savedInteraction) =>
-          setInteractions((prev) => [...prev, savedInteraction])
-        }
-      />
-      <div className={styles.section}>
-        <p className={styles.sectionLabel}>Interaction History</p>
-        {interactions.length === 0 ? (
-          <p className={styles.notesEmpty}>No interactions logged yet.</p>
-        ) : (
-          <ul className={styles.interactionList}>
-            {interactions.map((interaction) => (
-              <li key={interaction.id}>
-                <strong>{interaction.type}</strong> on {interaction.date}
-                <p>{interaction.notes}</p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      <InteractionsProvider customerId={id}>
+        <AddInteractionForm />
+        <InteractionList />
+      </InteractionsProvider>
     </div>
   );
 }
